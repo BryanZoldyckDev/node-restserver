@@ -1,7 +1,11 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { validarCampos } = require('../middlewares/validar-campos');
+// const { validarCampos } = require('../middlewares/validar-campos');
+// const { validateJWT } = require('../middlewares/validar-jwt');
+// const { isAdmin, hasRole } = require('../middlewares/validar-roles');
+
+const {validateFields, validateJWT, isAdmin, hasRole} = require('../middlewares/');
 const { validRole, validEmail, validUserById } = require('../helpers/db-validators');
 
 const { getUsers, 
@@ -12,14 +16,13 @@ const { getUsers,
 
 const router = Router();
 
-router.get('/', getUsers)
+router.get('/', getUsers);
 
 router.put('/:id', [
     check('id', 'Ins´t a valid a ID').isMongoId(),
     check('id').custom(validUserById),
     check('role').custom(validRole),
-
-    validarCampos
+    validateFields
 ],putUsers)
 
 router.post('/', [
@@ -29,14 +32,17 @@ router.post('/', [
     check('email').custom(validEmail),
     //check('role', 'Is not a valid role').isIn('ADMIN_ROLE', 'USER_ROLE'),
     check('role').custom(validRole),
-    validarCampos
+    validateFields
 
 ], postUsers)
 
 router.delete('/:id', [
+    validateJWT,
+    //isAdmin,
+    hasRole('ADMIN_ROLE', 'VENTAS_ROLE'),
     check('id', 'Ins´t a valid a ID').isMongoId(),
     check('id').custom(validUserById),
-    validarCampos
+    validateFields
 ], deleteUsers)
 
 router.patch('/', patchUsers)
