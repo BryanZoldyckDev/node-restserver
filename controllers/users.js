@@ -37,9 +37,6 @@ const postUsers = async(req, res = response) => {
     const salt = bcryptjs.genSaltSync();
     user.password = bcryptjs.hashSync( password, salt );
 
-
-
-
     //Guardar en DB
     await user.save();
 
@@ -49,17 +46,17 @@ const postUsers = async(req, res = response) => {
 const putUsers = async(req, res = response) => {
 
     const {id} = req.params;
-    const {_id, password, google, email, ...rest } = req.body;
+    const {_id, password, google, email, ...data } = req.body;
 
     //TODO: Validar contra base de datos
 
     if (password) {
         const salt = bcryptjs.genSaltSync();
-        rest.password = bcryptjs.hashSync( password, salt );
+        data.password = bcryptjs.hashSync( password, salt );
 
     }
 
-    const user = await User.findByIdAndUpdate(id, rest);
+    const user = await User.findByIdAndUpdate(id, data);
 
     res.status(400).json(user)
 }

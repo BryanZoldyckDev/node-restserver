@@ -18,14 +18,9 @@ const router = Router();
 
 router.get('/', getUsers);
 
-router.put('/:id', [
-    check('id', 'Ins´t a valid a ID').isMongoId(),
-    check('id').custom(validUserById),
-    check('role').custom(validRole),
-    validateFields
-],putUsers)
-
 router.post('/', [
+    validateJWT,
+    hasRole('ADMIN_ROLE'),
     check('name', 'Name is required').not().isEmpty(),
     check('password', 'Password is required and must be more than 4 characters').isLength({min: 5}), 
     check('email', 'E-mail is not valid').isEmail(),
@@ -35,6 +30,15 @@ router.post('/', [
     validateFields
 
 ], postUsers)
+
+router.put('/:id', [
+    validateJWT,
+    hasRole('ADMIN_ROLE'),
+    check('id', 'Ins´t a valid a ID').isMongoId(),
+    check('id').custom(validUserById),
+    check('role').custom(validRole),
+    validateFields
+],putUsers)
 
 router.delete('/:id', [
     validateJWT,
