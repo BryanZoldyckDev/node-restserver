@@ -17,25 +17,35 @@ const validEmail = async(email) => {
 const validUserById = async( id ) => {
     const idExists = await User.findById(id);
     if (!idExists){
-        throw new Error(`Id ${id} doesn´t exists in database`)
+        throw new Error(`Id ${id} doesn't exists in database`)
     }
 }
 
 const validCategoryById = async( id ) => {
     const categoryExists = await Category.findById(id);
     if (!categoryExists){
-        throw new Error(`Id ${id} doesn´t exists in database`)
+        throw new Error(`Id ${id} doesn't exists in database`)
     }
 }
 
 const validProductById = async( id ) => {
     const productExists = await Product.findById(id);
     if (!productExists){
-        throw new Error(`Id ${id} doesn´t exists in database`)
+        throw new Error(`Id ${id} doesn't exists in database`)
     }
 }
 
+const collectionsAllowed = async(collection = '', collections = []) => {
+    const collectionExits = collections.includes(collection);
+
+    if(!collectionExits) {
+        throw new Error(`The ${collection} is not allowed, valid collections are: ${collections}`);
+    }
+
+    return true;
+}
 module.exports = {
+    collectionsAllowed,
     validRole,
     validEmail,
     validUserById,
